@@ -2,83 +2,61 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
-  font-family: 'DM Sans', sans-serif;
-  background-color: #0a0a0f;
-  color: #e8eaf6;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #0d1117;
+  color: #e2e8f0;
   margin: 0;
   -webkit-font-smoothing: antialiased;
 }
 
-::-webkit-scrollbar {
-  width: 6px;
-}
-::-webkit-scrollbar-track {
-  background: #12121a;
-}
-::-webkit-scrollbar-thumb {
-  background: #2a2a3e;
-  border-radius: 3px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #c5f135;
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #111827; }
+::-webkit-scrollbar-thumb { background: #1c2541; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #4b7cf3; }
+
+.card {
+  background: #1a2236;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
 }
 
-.noise-bg {
-  position: relative;
-}
-.noise-bg::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.4;
+.icon-badge {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-}
+input:focus, select:focus { outline: none; }
 
-.volt-border {
-  border: 1px solid rgba(197, 241, 53, 0.3);
-}
-
-.status-pill {
-  font-family: 'Syne', sans-serif;
+.status-chip {
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  letter-spacing: 0.04em;
   padding: 3px 10px;
   border-radius: 20px;
 }
 
-input, select {
-  outline: none;
-}
-
-input:focus, select:focus {
-  outline: none;
-}
-
-.animate-fade-up {
-  animation: fadeUp 0.5s ease forwards;
-}
-
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-.delay-100 { animation-delay: 0.1s; }
-.delay-200 { animation-delay: 0.2s; }
-.delay-300 { animation-delay: 0.3s; }
-.delay-400 { animation-delay: 0.4s; }
+.animate-fade-up { animation: fadeUp 0.45s ease forwards; }
+.animate-fade-in { animation: fadeIn 0.3s ease forwards; }
+
+.delay-1 { animation-delay: 60ms; }
+.delay-2 { animation-delay: 120ms; }
+.delay-3 { animation-delay: 180ms; }
+.delay-4 { animation-delay: 240ms; }
+.delay-5 { animation-delay: 300ms; }

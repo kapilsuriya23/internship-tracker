@@ -10,7 +10,7 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
+  const handle = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -27,59 +27,82 @@ export default function Login() {
     }
   };
 
-  const inputClass = "w-full bg-ink-muted border border-white/8 rounded-2xl px-5 py-4 text-frost text-sm font-body placeholder-frost/20 focus:border-volt/50 transition-colors duration-200";
+  const inputStyle = {
+    width: '100%', background: '#111827',
+    border: '1px solid rgba(255,255,255,0.07)',
+    borderRadius: 12, padding: '13px 16px',
+    color: '#e2e8f0', fontSize: 14,
+    fontFamily: 'Plus Jakarta Sans, sans-serif',
+    transition: 'border-color 0.2s',
+  };
 
   return (
-    <div className="noise-bg min-h-screen bg-ink flex items-center justify-center px-4">
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: '#0d1117' }}>
       <div className="w-full max-w-md animate-fade-up">
-        <div className="text-center mb-10">
-          <Link to="/" className="inline-flex items-center gap-2 mb-8">
-            <span className="w-7 h-7 bg-volt rounded-md flex items-center justify-center">
-              <svg className="w-4 h-4 text-ink" fill="currentColor" viewBox="0 0 24 24">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2.5 mb-6">
+            <div className="icon-badge" style={{ background: '#4b7cf3', width: 40, height: 40, borderRadius: 12 }}>
+              <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M13 2L4.09 12.96a.5.5 0 0 0 .41.54H11l-2 9 8.91-10.96a.5.5 0 0 0-.41-.54H11l2-9z"/>
               </svg>
-            </span>
-            <span className="font-display font-700 text-lg text-frost">InternTrack</span>
+            </div>
+            <span className="font-bold text-xl text-white">InternTrack</span>
           </Link>
-          <h1 className="font-display font-700 text-3xl text-frost mb-2">Welcome back</h1>
-          <p className="text-frost/40 text-sm">Sign in to your account</p>
+          <h1 className="text-2xl font-extrabold text-white mb-1">Welcome back</h1>
+          <p className="text-sm" style={{ color: '#6b7a99' }}>Sign in to your account</p>
         </div>
 
-        <div className="bg-ink-soft border border-white/6 rounded-3xl p-8">
+        <div style={{ background: '#1a2236', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: 32 }}>
           {error && (
-            <div className="mb-6 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            <div className="mb-5 px-4 py-3 rounded-xl text-sm font-medium"
+              style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: '#fca5a5' }}>
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-display font-600 tracking-widest text-frost/40 uppercase mb-2">Email</label>
-              <input name="email" type="email" value={form.email} onChange={handleChange}
-                placeholder="you@example.com" required autoComplete="email" className={inputClass} />
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#6b7a99', marginBottom: 6, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                Email
+              </label>
+              <input name="email" type="email" value={form.email} onChange={handle}
+                placeholder="you@example.com" required autoComplete="email" style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'rgba(75,124,243,0.5)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.07)'} />
             </div>
             <div>
-              <label className="block text-xs font-display font-600 tracking-widest text-frost/40 uppercase mb-2">Password</label>
-              <input name="password" type="password" value={form.password} onChange={handleChange}
-                placeholder="••••••••" required autoComplete="current-password" className={inputClass} />
+              <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#6b7a99', marginBottom: 6, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                Password
+              </label>
+              <input name="password" type="password" value={form.password} onChange={handle}
+                placeholder="••••••••" required autoComplete="current-password" style={inputStyle}
+                onFocus={e => e.target.style.borderColor = 'rgba(75,124,243,0.5)'}
+                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.07)'} />
             </div>
 
-            <button type="submit" disabled={loading}
-              className="w-full mt-2 bg-volt text-ink font-display font-700 text-sm tracking-wide py-4 rounded-2xl hover:bg-volt-dark transition-colors duration-200 disabled:opacity-60 shadow-lg shadow-volt/15">
+            <button type="submit" disabled={loading} style={{
+              width: '100%', marginTop: 4,
+              background: 'linear-gradient(135deg, #4b7cf3, #3a6be0)',
+              color: 'white', fontFamily: 'Plus Jakarta Sans, sans-serif',
+              fontWeight: 700, fontSize: 14, padding: '14px',
+              borderRadius: 12, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
+              opacity: loading ? 0.6 : 1,
+              boxShadow: '0 4px 20px rgba(75,124,243,0.35)', transition: 'opacity 0.2s'
+            }}>
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <p className="text-center mt-6 text-frost/30 text-sm">
+          <p className="text-center mt-6 text-sm" style={{ color: '#6b7a99' }}>
             No account?{' '}
-            <Link to="/register" className="text-volt hover:text-volt-dark transition-colors font-600">
-              Create one →
-            </Link>
+            <Link to="/register" className="font-semibold" style={{ color: '#4b7cf3' }}>Create one →</Link>
           </p>
         </div>
       </div>
 
-      <div className="fixed top-1/3 right-1/4 w-64 h-64 bg-volt/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="fixed top-1/3 right-1/4 w-64 h-64 pointer-events-none"
+        style={{ background: 'radial-gradient(circle, rgba(75,124,243,0.06) 0%, transparent 70%)' }} />
     </div>
   );
 }

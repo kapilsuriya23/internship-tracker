@@ -1,28 +1,25 @@
-const STATUS_CONFIG = {
-  total: { label: 'Total', color: 'text-frost', bg: 'bg-white/5', border: 'border-white/10', icon: '◈' },
-  Applied: { label: 'Applied', color: 'text-blue-300', bg: 'bg-blue-500/10', border: 'border-blue-500/20', icon: '◎' },
-  Interview: { label: 'Interview', color: 'text-amber-300', bg: 'bg-amber-500/10', border: 'border-amber-500/20', icon: '◐' },
-  Offer: { label: 'Offer', color: 'text-volt', bg: 'bg-volt/10', border: 'border-volt/20', icon: '◉' },
-  Rejected: { label: 'Rejected', color: 'text-red-400', bg: 'bg-red-500/10', border: 'border-red-500/20', icon: '◌' },
-  Selected: { label: 'Selected', color: 'text-emerald-400', bg: 'bg-emerald-500/10', border: 'border-emerald-500/20', icon: '●' },
+const CONFIGS = {
+  total:      { label: 'Total Applied',   icon: '★', bg: '#4b7cf3', glow: 'rgba(75,124,243,0.15)' },
+  Applied:    { label: 'Applied',         icon: '◎', bg: '#4b7cf3', glow: 'rgba(75,124,243,0.15)' },
+  Interview:  { label: 'Interview',       icon: '◐', bg: '#f97316', glow: 'rgba(249,115,22,0.15)' },
+  Offer:      { label: 'Offer',           icon: '●', bg: '#22c55e', glow: 'rgba(34,197,94,0.15)'  },
+  Rejected:   { label: 'Rejected',        icon: '✕', bg: '#ef4444', glow: 'rgba(239,68,68,0.15)'  },
+  Selected:   { label: 'Selected',        icon: '✓', bg: '#a855f7', glow: 'rgba(168,85,247,0.15)' },
+  Assessment: { label: 'Assessment',      icon: '◈', bg: '#eab308', glow: 'rgba(234,179,8,0.15)'  },
 };
 
 export default function StatCard({ type, count, delay = 0 }) {
-  const config = STATUS_CONFIG[type] || STATUS_CONFIG.total;
+  const c = CONFIGS[type] || CONFIGS.total;
 
   return (
-    <div
-      className={`rounded-2xl p-5 border ${config.bg} ${config.border} animate-fade-up`}
-      style={{ animationDelay: `${delay}ms`, opacity: 0 }}
-    >
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-xs font-display font-600 tracking-widest text-frost/40 uppercase mb-3">
-            {config.label}
-          </p>
-          <p className={`text-4xl font-display font-800 ${config.color}`}>{count}</p>
-        </div>
-        <span className={`text-2xl ${config.color} opacity-60`}>{config.icon}</span>
+    <div className="card animate-fade-up p-5 flex items-center gap-4"
+      style={{ animationDelay: `${delay}ms`, opacity: 0, boxShadow: '0 4px 24px rgba(0,0,0,0.25)' }}>
+      <div className="icon-badge" style={{ background: c.glow, border: `1px solid ${c.bg}30` }}>
+        <span style={{ color: c.bg, fontSize: 18 }}>{c.icon}</span>
+      </div>
+      <div>
+        <p className="text-3xl font-bold text-white leading-none mb-1">{count}</p>
+        <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: '#6b7a99' }}>{c.label}</p>
       </div>
     </div>
   );

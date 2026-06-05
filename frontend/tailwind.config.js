@@ -4,46 +4,52 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        display: ['Syne', 'sans-serif'],
-        body: ['DM Sans', 'sans-serif'],
+        sans: ['Plus Jakarta Sans', 'sans-serif'],
       },
       colors: {
-        ink: {
-          DEFAULT: '#0a0a0f',
-          soft: '#12121a',
-          muted: '#1e1e2e',
+        navy: {
+          950: '#0d1117',
+          900: '#111827',
+          800: '#161d2e',
+          700: '#1c2541',
+          600: '#223060',
+          card: '#1a2236',
+          sidebar: '#131929',
         },
-        frost: {
-          DEFAULT: '#e8eaf6',
-          soft: '#f5f5ff',
+        blue: {
+          accent: '#4b7cf3',
+          soft: '#3a6be0',
+          glow: 'rgba(75, 124, 243, 0.18)',
         },
-        volt: {
-          DEFAULT: '#c5f135',
-          dark: '#a8d420',
-          glow: 'rgba(197, 241, 53, 0.15)',
+        orange: {
+          accent: '#f97316',
+          soft: '#ea6c0a',
+          glow: 'rgba(249, 115, 22, 0.18)',
         },
         slate: {
-          chip: '#2a2a3e',
+          text: '#a3b0cc',
+          muted: '#6b7a99',
+          border: 'rgba(255,255,255,0.07)',
         }
       },
+      boxShadow: {
+        card: '0 4px 24px rgba(0,0,0,0.3)',
+        blue: '0 4px 20px rgba(75, 124, 243, 0.3)',
+        orange: '0 4px 20px rgba(249, 115, 22, 0.3)',
+      },
       animation: {
-        'fade-up': 'fadeUp 0.5s ease forwards',
-        'slide-in': 'slideIn 0.3s ease forwards',
-        'pulse-volt': 'pulseVolt 2s ease-in-out infinite',
+        'fade-up': 'fadeUp 0.45s ease forwards',
+        'fade-in': 'fadeIn 0.3s ease forwards',
       },
       keyframes: {
         fadeUp: {
-          '0%': { opacity: '0', transform: 'translateY(16px)' },
+          '0%': { opacity: '0', transform: 'translateY(14px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
-        slideIn: {
-          '0%': { opacity: '0', transform: 'translateX(-12px)' },
-          '100%': { opacity: '1', transform: 'translateX(0)' },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         },
-        pulseVolt: {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(197, 241, 53, 0.4)' },
-          '50%': { boxShadow: '0 0 0 8px rgba(197, 241, 53, 0)' },
-        }
       }
     },
   },

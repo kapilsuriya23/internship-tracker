@@ -19,10 +19,11 @@ router.get('/', async (req, res) => {
     if (status && VALID_STATUSES.includes(status)) {
       filter.status = status;
     }
-    if (search) {
+    if (search && search.trim().length > 0) {
+      const escaped = search.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       filter.$or = [
-        { company: { $regex: search, $options: 'i' } },
-        { role: { $regex: search, $options: 'i' } }
+        { company: { $regex: escaped, $options: 'i' } },
+        { role: { $regex: escaped, $options: 'i' } }
       ];
     }
 

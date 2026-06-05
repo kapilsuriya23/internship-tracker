@@ -3,102 +3,146 @@ import api from '../api/axios';
 
 const STATUSES = ['Applied', 'Assessment', 'Interview', 'Offer', 'Rejected', 'Selected'];
 
-const STATUS_STYLES = {
-  Applied:    'bg-blue-500/15 text-blue-300 border-blue-500/30',
-  Assessment: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
-  Interview:  'bg-amber-500/15 text-amber-300 border-amber-500/30',
-  Offer:      'bg-volt/15 text-volt border-volt/30',
-  Rejected:   'bg-red-500/15 text-red-400 border-red-500/30',
-  Selected:   'bg-emerald-500/15 text-emerald-400 border-emerald-500/30',
+const STATUS_STYLE = {
+  Applied:    { bg: 'rgba(75,124,243,0.15)',  color: '#7aa3f7', border: 'rgba(75,124,243,0.3)'  },
+  Assessment: { bg: 'rgba(234,179,8,0.15)',   color: '#fbbf24', border: 'rgba(234,179,8,0.3)'   },
+  Interview:  { bg: 'rgba(249,115,22,0.15)',  color: '#fb923c', border: 'rgba(249,115,22,0.3)'  },
+  Offer:      { bg: 'rgba(34,197,94,0.15)',   color: '#4ade80', border: 'rgba(34,197,94,0.3)'   },
+  Rejected:   { bg: 'rgba(239,68,68,0.15)',   color: '#f87171', border: 'rgba(239,68,68,0.3)'   },
+  Selected:   { bg: 'rgba(168,85,247,0.15)',  color: '#c084fc', border: 'rgba(168,85,247,0.3)'  },
 };
 
-const fmt = (dateStr) => {
-  if (!dateStr) return '—';
-  return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-};
+const fmt = d => d ? new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '—';
 
 export default function ApplicationTable({ applications, onEdit, onRefresh }) {
   const [updatingId, setUpdatingId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
 
-  const handleStatusChange = async (id, newStatus) => {
+  const handleStatus = async (id, status) => {
     setUpdatingId(id);
-    try {
-      await api.patch(`/applications/${id}/status`, { status: newStatus });
-      onRefresh();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setUpdatingId(null);
-    }
+    try { await api.patch(`/applications/${id}/status`, { status }); onRefresh(); }
+    catch (e) { console.error(e); }
+    finally { setUpdatingId(null); }
   };
 
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this application?')) return;
     setDeletingId(id);
-    try {
-      await api.delete(`/applications/${id}`);
-      onRefresh();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setDeletingId(null);
-    }
+    try { await api.delete(`/applications/${id}`); onRefresh(); }
+    catch (e) { console.error(e); }
+    finally { setDeletingId(null); }
   };
 
-  if (applications.length === 0) {
-    return (
-      <div className="text-center py-20">
-        <p className="text-5xl mb-4">◌</p>
-        <p className="text-frost/30 font-display font-600">No applications yet</p>
-        <p className="text-frost/20 text-sm mt-1">Click + Add Application to get started</p>
-      </div>
-    );
-  }
+  if (!applications.length) return (
+    <div className="text-center py-20">
+      <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center text-3xl"
+        style={{ background: 'rgba(75,124,243,0.1)', border: '1px solid rgba(75,124,243,0.2)' }}>📋</div>
+      <p className="font-bold text-white mb-1">No applications yet</p>
+      <p className="text-sm" style={{ color: '#6b7a99' }}>Click + Add Application to get started</p>
+    </div>
+  );
 
   return (
     <div className="overflow-x-auto">
-      <table className="w-full">
+      <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '0 4px' }}>
         <thead>
-          <tr className="border-b border-white/5">
-            {['Company', 'Role', 'Applied', 'Deadline', 'Status', 'Actions'].map(h => (
-              <th key={h} className="text-left text-xs font-display font-600 tracking-widest text-frost/30 uppercase pb-4 pr-6">{h}</th>
+          <tr>
+            {['Company & Role', 'Applied', 'Deadline', 'Status', 'Actions'].map(h => (
+              <th key={h} style={{
+                textAlign: 'left', padding: '0 16px 12px',
+                fontSize: 11, fontWeight: 700, letterSpacing: '0.07em',
+                textTransform: 'uppercase', color: '#6b7a99',
+                borderBottom: '1px solid rgba(255,255,255,0.06)'
+              }}>{h}</th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-white/4">
+        <tbody>
           {applications.map((app, i) => (
             <tr key={app._id}
-              className="group hover:bg-white/2 transition-colors duration-150"
-              style={{ animation: `fadeUp 0.4s ease forwards ${i * 40}ms`, opacity: 0 }}>
-              <td className="py-4 pr-6">
-                <div className="font-display font-600 text-frost text-sm">{app.company}</div>
-                {app.applicationLink && (
-                  <a href={app.applicationLink} target="_blank" rel="noopener noreferrer"
-                    className="text-xs text-frost/30 hover:text-volt transition-colors">↗ link</a>
-                )}
+              style={{ animation: `fadeUp 0.4s ease forwards ${i * 35}ms`, opacity: 0 }}
+              className="group">
+              {/* Company + Role */}
+              <td style={{ padding: '12px 16px' }}>
+                <div className="flex items-center gap-3">
+                  <div className="icon-badge flex-shrink-0"
+                    style={{ width: 38, height: 38, background: 'rgba(75,124,243,0.12)',
+                      border: '1px solid rgba(75,124,243,0.2)', borderRadius: 10 }}>
+                    <span style={{ color: '#4b7cf3', fontWeight: 800, fontSize: 14 }}>
+                      {app.company[0].toUpperCase()}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-sm text-white">{app.company}</p>
+                    <p className="text-xs mt-0.5" style={{ color: '#6b7a99' }}>{app.role}</p>
+                    {app.applicationLink && (
+                      <a href={app.applicationLink} target="_blank" rel="noopener noreferrer"
+                        className="text-xs transition-colors"
+                        style={{ color: '#4b7cf3' }}
+                        onMouseEnter={e => e.target.style.color = '#7aa3f7'}
+                        onMouseLeave={e => e.target.style.color = '#4b7cf3'}>
+                        ↗ Open Link
+                      </a>
+                    )}
+                  </div>
+                </div>
               </td>
-              <td className="py-4 pr-6 text-sm text-frost/70">{app.role}</td>
-              <td className="py-4 pr-6 text-sm text-frost/50">{fmt(app.appliedDate)}</td>
-              <td className="py-4 pr-6 text-sm text-frost/50">{fmt(app.deadline)}</td>
-              <td className="py-4 pr-6">
-                <select
-                  value={app.status}
-                  disabled={updatingId === app._id}
-                  onChange={e => handleStatusChange(app._id, e.target.value)}
-                  className={`status-pill border cursor-pointer bg-transparent ${STATUS_STYLES[app.status]} disabled:opacity-50 transition-all duration-200`}
-                >
-                  {STATUSES.map(s => <option key={s} value={s} className="bg-ink-muted text-frost">{s}</option>)}
-                </select>
+
+              {/* Applied */}
+              <td style={{ padding: '12px 16px' }}>
+                <span className="text-sm font-medium" style={{ color: '#a3b0cc' }}>{fmt(app.appliedDate)}</span>
               </td>
-              <td className="py-4">
-                <div className="flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+
+              {/* Deadline */}
+              <td style={{ padding: '12px 16px' }}>
+                <span className="text-sm" style={{ color: app.deadline ? '#a3b0cc' : '#3a4a66' }}>
+                  {fmt(app.deadline)}
+                </span>
+              </td>
+
+              {/* Status */}
+              <td style={{ padding: '12px 16px' }}>
+                {(() => {
+                  const s = STATUS_STYLE[app.status] || STATUS_STYLE.Applied;
+                  return (
+                    <select value={app.status} disabled={updatingId === app._id}
+                      onChange={e => handleStatus(app._id, e.target.value)}
+                      className="status-chip"
+                      style={{
+                        background: s.bg, color: s.color,
+                        border: `1px solid ${s.border}`,
+                        cursor: 'pointer', fontFamily: 'Plus Jakarta Sans, sans-serif',
+                        colorScheme: 'dark', transition: 'opacity 0.2s',
+                        opacity: updatingId === app._id ? 0.5 : 1
+                      }}>
+                      {STATUSES.map(st => (
+                        <option key={st} value={st} style={{ background: '#1a2236', color: '#e2e8f0' }}>{st}</option>
+                      ))}
+                    </select>
+                  );
+                })()}
+              </td>
+
+              {/* Actions */}
+              <td style={{ padding: '12px 16px' }}>
+                <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
                   <button onClick={() => onEdit(app)}
-                    className="text-xs text-frost/40 hover:text-volt transition-colors font-display font-600">
+                    style={{
+                      fontSize: 12, fontWeight: 600, padding: '5px 12px', borderRadius: 8,
+                      background: 'rgba(75,124,243,0.12)', color: '#4b7cf3',
+                      border: '1px solid rgba(75,124,243,0.2)', cursor: 'pointer',
+                      fontFamily: 'Plus Jakarta Sans, sans-serif', transition: 'background 0.15s'
+                    }}>
                     Edit
                   </button>
                   <button onClick={() => handleDelete(app._id)} disabled={deletingId === app._id}
-                    className="text-xs text-frost/40 hover:text-red-400 transition-colors font-display font-600 disabled:opacity-50">
+                    style={{
+                      fontSize: 12, fontWeight: 600, padding: '5px 12px', borderRadius: 8,
+                      background: 'rgba(239,68,68,0.1)', color: '#f87171',
+                      border: '1px solid rgba(239,68,68,0.2)', cursor: 'pointer',
+                      fontFamily: 'Plus Jakarta Sans, sans-serif', opacity: deletingId === app._id ? 0.5 : 1,
+                      transition: 'background 0.15s'
+                    }}>
                     {deletingId === app._id ? '...' : 'Delete'}
                   </button>
                 </div>

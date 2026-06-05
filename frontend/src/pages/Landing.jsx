@@ -1,80 +1,91 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
+const Feature = ({ icon, label }) => (
+  <div className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold"
+    style={{ background: '#1a2236', border: '1px solid rgba(255,255,255,0.06)', color: '#a3b0cc' }}>
+    <span>{icon}</span>{label}
+  </div>
+);
+
 export default function Landing() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="noise-bg min-h-screen bg-ink flex flex-col">
+    <div className="min-h-screen" style={{ background: '#0d1117' }}>
       {/* Nav */}
-      <nav className="px-8 py-6 flex items-center justify-between max-w-7xl mx-auto w-full">
-        <div className="flex items-center gap-2">
-          <span className="w-7 h-7 bg-volt rounded-md flex items-center justify-center">
-            <svg className="w-4 h-4 text-ink" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M13 2L4.09 12.96a.5.5 0 0 0 .41.54H11l-2 9 8.91-10.96a.5.5 0 0 0-.41-.54H11l2-9z"/>
-            </svg>
-          </span>
-          <span className="font-display font-700 text-lg text-frost">InternTrack</span>
-        </div>
-        <div className="flex items-center gap-4">
-          <Link to="/login" className="text-sm text-frost/60 hover:text-frost transition-colors font-display font-600">
-            Login
-          </Link>
-          <Link to={isAuthenticated ? '/dashboard' : '/register'}
-            className="bg-volt text-ink text-sm font-display font-700 px-5 py-2 rounded-xl hover:bg-volt-dark transition-colors">
-            Get Started
-          </Link>
+      <nav style={{ background: '#131929', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+        className="sticky top-0 z-40">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="icon-badge" style={{ background: '#4b7cf3', width: 36, height: 36, borderRadius: 10 }}>
+              <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M13 2L4.09 12.96a.5.5 0 0 0 .41.54H11l-2 9 8.91-10.96a.5.5 0 0 0-.41-.54H11l2-9z"/>
+              </svg>
+            </div>
+            <span className="font-bold text-lg text-white">InternTrack</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Link to="/login"
+              className="text-sm font-semibold px-4 py-2 rounded-xl transition-colors"
+              style={{ color: '#a3b0cc' }}>Login</Link>
+            <Link to={isAuthenticated ? '/dashboard' : '/register'}
+              className="text-sm font-bold px-5 py-2.5 rounded-xl text-white"
+              style={{ background: 'linear-gradient(135deg, #4b7cf3, #3a6be0)', boxShadow: '0 4px 16px rgba(75,124,243,0.35)' }}>
+              Get Started
+            </Link>
+          </div>
         </div>
       </nav>
 
       {/* Hero */}
-      <main className="flex-1 flex items-center justify-center px-8 relative z-10">
-        <div className="max-w-3xl w-full text-center">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 bg-volt/10 border border-volt/20 rounded-full px-4 py-1.5 mb-10 animate-fade-up">
-            <span className="w-1.5 h-1.5 bg-volt rounded-full animate-pulse" />
-            <span className="text-volt text-xs font-display font-600 tracking-widest uppercase">
-              Application Command Center
-            </span>
-          </div>
+      <main className="max-w-6xl mx-auto px-6 pt-24 pb-20 text-center">
+        {/* Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-8 animate-fade-up text-sm font-semibold"
+          style={{ background: 'rgba(75,124,243,0.12)', border: '1px solid rgba(75,124,243,0.25)', color: '#7aa3f7' }}>
+          <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse inline-block" />
+          Internship Application Tracker
+        </div>
 
-          <h1 className="font-display font-800 text-6xl sm:text-7xl text-frost leading-[1.05] mb-6 animate-fade-up delay-100"
-              style={{ opacity: 0 }}>
-            Never Lose Track of an
-            <br />
-            <span className="text-volt">Internship</span> Again.
-          </h1>
+        <h1 className="font-extrabold text-5xl sm:text-6xl text-white leading-tight mb-6 animate-fade-up delay-1"
+          style={{ opacity: 0, letterSpacing: '-0.02em' }}>
+          Never lose track of an<br />
+          <span style={{ color: '#4b7cf3' }}>internship</span> again.
+        </h1>
 
-          <p className="text-frost/50 text-lg font-body font-300 mb-12 max-w-xl mx-auto leading-relaxed animate-fade-up delay-200"
-             style={{ opacity: 0 }}>
-            One dashboard to track every application — status updates, deadlines, and insights at a glance.
-          </p>
+        <p className="text-lg mb-10 max-w-lg mx-auto animate-fade-up delay-2"
+          style={{ color: '#6b7a99', opacity: 0, lineHeight: 1.7 }}>
+          One dashboard to manage all your applications — track statuses, deadlines, and stats in real time.
+        </p>
 
-          <div className="flex items-center justify-center gap-4 animate-fade-up delay-300" style={{ opacity: 0 }}>
-            <Link to="/register"
-              className="bg-volt text-ink font-display font-700 text-sm tracking-wide px-8 py-4 rounded-2xl hover:bg-volt-dark transition-colors duration-200 shadow-lg shadow-volt/20">
-              Start Tracking Free
-            </Link>
-            <Link to="/login"
-              className="text-frost/50 font-display font-600 text-sm hover:text-frost transition-colors">
-              Already have an account →
-            </Link>
-          </div>
+        <div className="flex items-center justify-center gap-4 mb-16 animate-fade-up delay-3" style={{ opacity: 0 }}>
+          <Link to="/register"
+            className="font-bold text-sm px-8 py-4 rounded-2xl text-white"
+            style={{ background: 'linear-gradient(135deg, #4b7cf3, #3a6be0)', boxShadow: '0 8px 24px rgba(75,124,243,0.4)' }}>
+            Start for Free
+          </Link>
+          <Link to="/login"
+            className="font-semibold text-sm px-6 py-4 rounded-2xl transition-colors"
+            style={{ color: '#a3b0cc', background: '#1a2236', border: '1px solid rgba(255,255,255,0.06)' }}>
+            Sign In →
+          </Link>
+        </div>
 
-          {/* Feature pills */}
-          <div className="flex flex-wrap justify-center gap-3 mt-16 animate-fade-up delay-400" style={{ opacity: 0 }}>
-            {['JWT Secured', '6 Status Stages', 'Instant Search', 'Stats Dashboard', 'Deadline Tracking'].map(f => (
-              <span key={f} className="text-xs text-frost/30 font-display font-600 tracking-widest border border-white/6 rounded-full px-4 py-1.5 uppercase">
-                {f}
-              </span>
-            ))}
-          </div>
+        {/* Feature pills */}
+        <div className="flex flex-wrap justify-center gap-3 animate-fade-up delay-4" style={{ opacity: 0 }}>
+          {[
+            { icon: '🔐', label: 'JWT Secured' },
+            { icon: '📊', label: 'Stats Dashboard' },
+            { icon: '⚡', label: 'Live Search' },
+            { icon: '🎯', label: '6 Status Stages' },
+            { icon: '📅', label: 'Deadline Tracking' },
+          ].map(f => <Feature key={f.label} {...f} />)}
         </div>
       </main>
 
-      {/* Gradient orbs */}
-      <div className="fixed top-1/4 left-1/4 w-96 h-96 bg-volt/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="fixed bottom-1/4 right-1/4 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+      {/* Ambient glow */}
+      <div className="fixed top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse, rgba(75,124,243,0.08) 0%, transparent 70%)' }} />
     </div>
   );
 }
