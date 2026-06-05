@@ -10,54 +10,105 @@ const applicationRoutes = require('./routes/applications');
 
 const app = express();
 
-// Security middleware
 app.use(helmet());
+
+// ── CORS — reads allowed origins from .env ────────────────────
+const rawOrigins = process.env.ALLOWED_ORIGINS || '';
+const allowedOrigins = rawOrigins
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
+// Always allow localhost in development
+if (process.env.NODE_ENV !== 'production') {
+  allowedOrigins.push(
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173'
+  );
+}
+
+console.log('✅ Allowed origins:', allowedOrigins);
+
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' ? 'https://yourdomain.com' : 'http://localhost:5173',
-  credentials: true
+  origin: function (origin, callback) {
+    // Allow no-origin requests (Postman, curl, mobile)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    console.error(`❌ CORS blocked: ${origin}`);
+    callback(new Error(`CORS blocked for origin: ${origin}`));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-// Rate limiting
+// Handle preflight for all routes
+app.options('*', cors());
+
+app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// ── Rate limiting ─────────────────────────────────────────────
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
+  windowMs: 15 * 60 * 1000,
   max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: { error: 'Too many requests, please try again later.' }
 });
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 10,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
   message: { error: 'Too many auth attempts, please try again later.' }
 });
 
 app.use('/api/', limiter);
 app.use('/api/auth', authLimiter);
 
-app.use(express.json({ limit: '10kb' }));
-
-// Routes
+// ── Routes ────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/applications', applicationRoutes);
 
-// Health check
-app.get('/api/health', (req, res) => res.json({ status: 'OK' }));
+// ── Health check (used by keep-alive ping) ────────────────────
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'OK',
+    db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    env: process.env.NODE_ENV,
+    uptime: Math.floor(process.uptime()) + 's'
+  });
+});
 
-// Global error handler
+// ── 404 ───────────────────────────────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({ error: `Route ${req.method} ${req.path} not found` });
+});
+
+// ── Global error handler ──────────────────────────────────────
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error('❌ Server error:', err.message);
+  if (err.message?.startsWith('CORS blocked')) {
+    return res.status(403).json({ error: err.message });
+  }
   res.status(err.status || 500).json({
     error: process.env.NODE_ENV === 'production' ? 'Something went wrong' : err.message
   });
 });
 
-// Connect DB and start server
+// ── Connect DB then start ─────────────────────────────────────
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB connected');
-    app.listen(process.env.PORT || 5000, () => {
-      console.log(`🚀 Server running on port ${process.env.PORT || 5000}`);
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   })
   .catch(err => {
-    console.error('❌ MongoDB connection error:', err.message);
+    console.error('❌ MongoDB connection failed:', err.message);
     process.exit(1);
   });
