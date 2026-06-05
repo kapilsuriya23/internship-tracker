@@ -12,30 +12,34 @@ const app = express();
 
 app.use(helmet());
 
-// ── CORS — reads allowed origins from .env ────────────────────
 const rawOrigins = process.env.ALLOWED_ORIGINS || '';
 const allowedOrigins = rawOrigins
   .split(',')
   .map(o => o.trim())
   .filter(Boolean);
 
-// Always allow localhost in development
-if (process.env.NODE_ENV !== 'production') {
-  allowedOrigins.push(
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:3000',
-    'http://127.0.0.1:5173'
-  );
-}
-
 console.log('✅ Allowed origins:', allowedOrigins);
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Allow no-origin requests (Postman, curl, mobile)
+    // Allow no-origin requests (Postman, curl)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
+
+    // Allow localhost in development
+    if (origin.startsWith('http://localhost') || origin.startsWith('http://127.0.0.1')) {
+      return callback(null, true);
+    }
+
+    // Allow any vercel.app subdomain (covers preview + production deployments)
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+
+    // Allow explicitly whitelisted origins (custom domains etc.)
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
     console.error(`❌ CORS blocked: ${origin}`);
     callback(new Error(`CORS blocked for origin: ${origin}`));
   },
@@ -44,6 +48,7 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
+app.options('*', cors());
 // Handle preflight for all routes
 app.options('*', cors());
 
