@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import api from '../api/axios';
 import Navbar from '../components/Navbar';
 import StatCard from '../components/StatCard';
@@ -16,10 +16,21 @@ export default function Dashboard() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editData, setEditData] = useState(null);
 
+  // Debounce search input — waits 400ms after typing stops
+  const searchDebounce = useRef(null);
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  useEffect(() => {
+    clearTimeout(searchDebounce.current);
+    searchDebounce.current = setTimeout(() => setDebouncedSearch(search), 400);
+    return () => clearTimeout(searchDebounce.current);
+  }, [search]);
+
+
   const fetchData = useCallback(async () => {
     try {
       const params = {};
-      if (search) params.search = search;
+      if (debouncedSearch) params.search = debouncedSearch;
       if (filterStatus) params.status = filterStatus;
 
       const [appsRes, statsRes] = await Promise.all([
@@ -33,7 +44,7 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, [search, filterStatus]);
+  },  [debouncedSearch, filterStatus]);
 
   useEffect(() => {
     fetchData();
