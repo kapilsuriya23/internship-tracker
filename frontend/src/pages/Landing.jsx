@@ -71,7 +71,7 @@ export default function Landing() {
           </Link>
         </div>
 
-        {/* Feature pills */}
+        {/* Feature pills
         <div className="flex flex-wrap justify-center gap-3 animate-fade-up delay-4" style={{ opacity: 0 }}>
           {[
             { icon: '🔐', label: 'JWT Secured' },
@@ -80,7 +80,7 @@ export default function Landing() {
             { icon: '🎯', label: '6 Status Stages' },
             { icon: '📅', label: 'Deadline Tracking' },
           ].map(f => <Feature key={f.label} {...f} />)}
-        </div>
+        </div> */}
       </main>
 
       {/* Ambient glow */}
