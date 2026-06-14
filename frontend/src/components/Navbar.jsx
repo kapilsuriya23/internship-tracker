@@ -19,7 +19,7 @@ export default function Navbar() {
               <path d="M13 2L4.09 12.96a.5.5 0 0 0 .41.54H11l-2 9 8.91-10.96a.5.5 0 0 0-.41-.54H11l2-9z"/>
             </svg>
           </div>
-          <span className="font-bold text-lg text-white tracking-tight">InternTrack</span>
+          <span className="font-bold text-lg text-white tracking-tight">Job Application Tracker</span>
         </Link>
 
         {/* Right */}

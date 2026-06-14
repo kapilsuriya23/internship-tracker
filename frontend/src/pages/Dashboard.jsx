@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import api from '../api/axios';
 import Navbar from '../components/Navbar';
 import StatCard from '../components/StatCard';
-import ApplicationTable from '../components/ApplicationTable';
+import KanbanBoard from '../components/KanbanBoard';
 import ApplicationModal from '../components/ApplicationModal';
 
 const STATUSES = ['Applied', 'Assessment', 'Interview', 'Offer', 'Rejected', 'Selected'];
@@ -136,6 +136,7 @@ export default function Dashboard() {
               </div>
             </div>
 
+            
             {/* Filters */}
             <div className="flex items-center gap-3 flex-wrap">
               {/* Search */}
@@ -204,7 +205,7 @@ export default function Dashboard() {
                 style={{ borderColor: 'rgba(75,124,243,0.3)', borderTopColor: '#4b7cf3' }} />
             </div>
           ) : (
-            <ApplicationTable
+            <KanbanBoard
               applications={applications}
               onEdit={handleEdit}
               onRefresh={handleRefresh}
