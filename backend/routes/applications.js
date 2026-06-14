@@ -54,6 +54,70 @@ router.get('/stats', async (req, res) => {
   }
 });
 
+// GET analytics data
+router.get('/analytics', async (req, res) => {
+  try {
+    const apps = await Application.find({ userId: req.user._id })
+      .select('status appliedDate updatedAt company')
+      .lean();
+
+    // 1. Applications over time — grouped by week (last 10 weeks, Monday start)
+    const weekMap = {};
+    apps.forEach(a => {
+      const d = new Date(a.appliedDate);
+      const day = d.getDay();
+      const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+      const monday = new Date(d);
+      monday.setDate(diff);
+      monday.setHours(0, 0, 0, 0);
+      const key = monday.toISOString().split('T')[0];
+      weekMap[key] = (weekMap[key] || 0) + 1;
+    });
+    const timeline = Object.entries(weekMap)
+      .sort((a, b) => new Date(a[0]) - new Date(b[0]))
+      .slice(-10)
+      .map(([date, count]) => ({ date, count }));
+
+    // 2. Status distribution
+    const distribution = {};
+    apps.forEach(a => { distribution[a.status] = (distribution[a.status] || 0) + 1; });
+
+    // 3. Pipeline funnel snapshot (excludes Rejected — shows current stage reach)
+    const PIPELINE = ['Applied', 'Assessment', 'Interview', 'Offer', 'Selected'];
+    const rank = s => PIPELINE.indexOf(s);
+    const funnel = PIPELINE.map(stage => ({
+      stage,
+      count: apps.filter(a => rank(a.status) >= 0 && rank(a.status) >= rank(stage)).length
+    }));
+
+    // 4. Avg response time (days between appliedDate and updatedAt, for non-Applied apps)
+    const responded = apps.filter(a => a.status !== 'Applied');
+    const avgResponseDays = responded.length
+      ? Math.round(
+          responded.reduce((sum, a) => sum + (new Date(a.updatedAt) - new Date(a.appliedDate)), 0)
+          / responded.length / (1000 * 60 * 60 * 24)
+        )
+      : 0;
+
+    // 5. Top companies by application count
+    const companyMap = {};
+    apps.forEach(a => { companyMap[a.company] = (companyMap[a.company] || 0) + 1; });
+    const topCompanies = Object.entries(companyMap)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([company, count]) => ({ company, count }));
+
+    // 6. Success rate
+    const total = apps.length;
+    const selected = apps.filter(a => a.status === 'Selected').length;
+    const successRate = total ? Math.round((selected / total) * 100) : 0;
+
+    res.json({ timeline, distribution, funnel, avgResponseDays, topCompanies, successRate, total });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // POST create application
 router.post('/', [
   body('company').trim().notEmpty().withMessage('Company is required'),

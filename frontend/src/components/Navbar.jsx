@@ -1,9 +1,10 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => { logout(); navigate('/'); };
 
@@ -21,6 +22,27 @@ export default function Navbar() {
           </div>
           <span className="font-bold text-lg text-white tracking-tight">Job Application Tracker</span>
         </Link>
+
+        {/* Nav links */}
+        <div className="hidden md:flex items-center gap-1 p-1 rounded-xl"
+          style={{ background: '#1a2236', border: '1px solid rgba(255,255,255,0.06)' }}>
+          {[
+            { to: '/dashboard', label: 'Dashboard' },
+            { to: '/analytics', label: 'Analytics' },
+          ].map(link => {
+            const active = location.pathname === link.to;
+            return (
+              <Link key={link.to} to={link.to}
+                className="text-sm font-semibold px-4 py-2 rounded-lg transition-colors"
+                style={{
+                  background: active ? 'rgba(75,124,243,0.15)' : 'transparent',
+                  color: active ? '#4b7cf3' : '#6b7a99',
+                }}>
+                {link.label}
+              </Link>
+            );
+          })}
+        </div>
 
         {/* Right */}
         <div className="flex items-center gap-4">
