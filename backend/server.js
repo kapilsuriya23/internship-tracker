@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const authRoutes = require('./routes/auth');
 const applicationRoutes = require('./routes/applications');
+const { startReminderJob } = require('./jobs/deadlineReminder');
 
 const app = express();
 
@@ -111,6 +112,7 @@ mongoose.connect(process.env.MONGO_URI)
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Server running on port ${PORT}`);
+      startReminderJob();
     });
   })
   .catch(err => {

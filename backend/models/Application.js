@@ -37,6 +37,10 @@ const applicationSchema = new mongoose.Schema({
     type: String,
     enum: STATUSES,
     default: 'Applied'
+  },
+  reminderSent: {
+    type: Boolean,
+    default: false
   }
 }, { timestamps: true });
 

@@ -33,7 +33,7 @@ router.post('/register', [
 
     res.status(201).json({
       token,
-      user: { id: user._id, name: user.name, email: user.email }
+      user: { id: user._id, name: user.name, email: user.email, emailRemindersEnabled: user.emailRemindersEnabled }
     });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
@@ -58,9 +58,9 @@ router.post('/login', [
     }
 
     const token = signToken(user._id);
-    res.json({
+    return res.json({
       token,
-      user: { id: user._id, name: user.name, email: user.email }
+      user: { id: user._id, name: user.name, email: user.email, emailRemindersEnabled: user.emailRemindersEnabled }
     });
   } catch (err) {
     res.status(500).json({ error: 'Server error' });
@@ -70,6 +70,24 @@ router.post('/login', [
 // Get current user
 router.get('/me', protect, (req, res) => {
   res.json({ user: req.user });
+});
+
+// Update email reminder preference
+router.patch('/preferences', protect, async (req, res) => {
+  try {
+    const { emailRemindersEnabled } = req.body;
+    if (typeof emailRemindersEnabled !== 'boolean') {
+      return res.status(400).json({ error: 'emailRemindersEnabled must be a boolean' });
+    }
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { emailRemindersEnabled },
+      { new: true }
+    ).select('-password');
+    res.json({ user });
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 module.exports = router;

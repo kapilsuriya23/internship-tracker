@@ -180,7 +180,7 @@ router.put('/:id', [
     const { company, role, applicationLink, appliedDate, deadline, status } = req.body;
     const application = await Application.findOneAndUpdate(
       { _id: req.params.id, userId: req.user._id },
-      { company, role, applicationLink, appliedDate, deadline, status },
+      { company, role, applicationLink, appliedDate, deadline, status ,reminderSent: false},
       { new: true, runValidators: true }
     );
     if (!application) return res.status(404).json({ error: 'Application not found' });
@@ -189,6 +189,48 @@ router.put('/:id', [
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+// POST test reminder — always sends regardless of deadline/reminderSent
+router.post('/test-reminder', async (req, res) => {
+  try {
+    const { sendDeadlineReminder, sendTestEmail } = require('../utils/emailService');
+
+    console.log('📧 Test reminder requested by:', req.user.email);
+
+    // First try to find apps with upcoming deadlines
+    const now = new Date();
+    const in48h = new Date(now.getTime() + 48 * 60 * 60 * 1000);
+
+    const upcomingApps = await Application.find({
+      userId: req.user._id,
+      deadline: { $gte: now, $lte: in48h },
+      status: { $in: ['Applied', 'Assessment', 'Interview', 'Offer'] },
+    });
+
+    if (upcomingApps.length > 0) {
+      // Send real reminder with actual upcoming deadlines
+      await sendDeadlineReminder(req.user.email, req.user.name, upcomingApps);
+      return res.json({
+        message: `Reminder email sent to ${req.user.email} with ${upcomingApps.length} upcoming deadline(s).`,
+        sent: true
+      });
+    }
+
+    // No upcoming deadlines — send a plain test email instead
+    await sendTestEmail(req.user.email, req.user.name);
+    return res.json({
+      message: `Test email sent to ${req.user.email}. No upcoming deadlines found — a confirmation email was sent instead.`,
+      sent: true
+    });
+
+  } catch (err) {
+    console.error('❌ Test reminder error:', err.message);
+    return res.status(500).json({
+      error: err.message || 'Failed to send email. Check EMAIL_USER and EMAIL_PASS in your .env file.'
+    });
+  }
+});
+
 
 // DELETE application
 router.delete('/:id', async (req, res) => {
