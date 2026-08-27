@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const STATUSES = ['Applied', 'Assessment', 'Interview', 'Offer', 'Rejected', 'Selected'];
+const STATUSES = ['Applied', 'Assessment', 'Interview', 'Offer', 'Rejected', 'Selected', 'Mailed'];
 
 const applicationSchema = new mongoose.Schema({
   userId: {
@@ -21,22 +21,30 @@ const applicationSchema = new mongoose.Schema({
     trim: true,
     maxlength: [100, 'Role name too long']
   },
-  applicationLink: {
+  location: {
     type: String,
     trim: true,
-    match: [/^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/, 'Please enter a valid URL']
+    maxlength: [100, 'Location too long']
+  },
+  jobLink: {
+    type: String,
+    trim: true,
   },
   appliedDate: {
     type: Date,
-    required: [true, 'Applied date is required']
-  },
-  deadline: {
-    type: Date
   },
   status: {
     type: String,
     enum: STATUSES,
     default: 'Applied'
+  },
+  recruiterEmail: {
+    type: String,
+    trim: true,
+  },
+  tracking: {
+    type: String,
+    trim: true,
   },
   reminderSent: {
     type: Boolean,

@@ -2,30 +2,253 @@
 @tailwind components;
 @tailwind utilities;
 
-* { box-sizing: border-box; }
+:root {
+  --bg:        #1a1a2e;
+  --bg-deep:   #12121f;
+  --bg-raised: #22223a;
+  --shadow-dark:  #0d0d1a;
+  --shadow-light: rgba(255,255,255,0.07);
+  --iris-1: #a78bfa;
+  --iris-2: #818cf8;
+  --iris-3: #38bdf8;
+  --iris-4: #f472b6;
+  --iris-5: #34d399;
+  --text:      #e2e0ff;
+  --text-muted:#8b8aad;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: #0d1117;
-  color: #e2e8f0;
-  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-::-webkit-scrollbar { width: 5px; }
-::-webkit-scrollbar-track { background: #111827; }
-::-webkit-scrollbar-thumb { background: #1c2541; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #4b7cf3; }
-
-.card {
-  background: #1a2236;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 16px;
+/* ── Global background ───────────────────────────────── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(167,139,250,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(56,189,248,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 50% 50%, rgba(244,114,182,0.05) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
 }
 
+/* ── Neumorphic surface ──────────────────────────────── */
+.neu {
+  background: var(--bg-raised);
+  box-shadow:
+    6px 6px 16px var(--shadow-dark),
+    -4px -4px 12px var(--shadow-light);
+  border-radius: 18px;
+  position: relative;
+  overflow: hidden;
+}
+
+.neu::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(255,255,255,0.06) 0%,
+    transparent 50%,
+    rgba(255,255,255,0.02) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Iridescent shimmer border ───────────────────────── */
+.iris-border {
+  position: relative;
+}
+.iris-border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(167,139,250,0.5),
+    rgba(56,189,248,0.4),
+    rgba(244,114,182,0.4),
+    rgba(52,211,153,0.3),
+    rgba(167,139,250,0.5)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+/* ── Iridescent gradient text ────────────────────────── */
+.iris-text {
+  background: linear-gradient(90deg, #a78bfa, #38bdf8, #f472b6, #34d399, #a78bfa);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 0% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ── Pressed inset (active state) ────────────────────── */
+.neu-inset {
+  box-shadow:
+    inset 3px 3px 8px var(--shadow-dark),
+    inset -2px -2px 6px var(--shadow-light);
+}
+
+/* ── Button ──────────────────────────────────────────── */
+.neu-btn {
+  background: var(--bg-raised);
+  box-shadow:
+    4px 4px 10px var(--shadow-dark),
+    -3px -3px 8px var(--shadow-light);
+  border: none;
+  border-radius: 12px;
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.1s;
+  position: relative;
+  overflow: hidden;
+}
+
+.neu-btn:hover {
+  box-shadow:
+    6px 6px 14px var(--shadow-dark),
+    -4px -4px 10px var(--shadow-light);
+}
+
+.neu-btn:active {
+  box-shadow:
+    inset 2px 2px 6px var(--shadow-dark),
+    inset -1px -1px 4px var(--shadow-light);
+  transform: scale(0.98);
+}
+
+/* ── Primary iris button ─────────────────────────────── */
+.iris-btn {
+  background: linear-gradient(135deg, #7c3aed, #4f46e5, #0ea5e9);
+  background-size: 200% 200%;
+  box-shadow:
+    4px 4px 12px rgba(124,58,237,0.4),
+    -2px -2px 8px rgba(255,255,255,0.06);
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-position 0.4s, box-shadow 0.2s, transform 0.1s;
+  animation: iris-shift 6s ease infinite;
+}
+
+@keyframes iris-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+.iris-btn:hover {
+  box-shadow:
+    6px 6px 20px rgba(124,58,237,0.5),
+    -2px -2px 10px rgba(255,255,255,0.08);
+}
+
+.iris-btn:active {
+  transform: scale(0.97);
+}
+
+/* ── Input ───────────────────────────────────────────── */
+.neu-input {
+  background: var(--bg-deep);
+  box-shadow:
+    inset 3px 3px 8px var(--shadow-dark),
+    inset -2px -2px 6px rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.05);
+  border-radius: 12px;
+  color: var(--text);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  padding: 11px 16px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.neu-input:focus {
+  border-color: rgba(167,139,250,0.5);
+  box-shadow:
+    inset 3px 3px 8px var(--shadow-dark),
+    inset -2px -2px 6px rgba(255,255,255,0.04),
+    0 0 0 3px rgba(167,139,250,0.12);
+}
+
+.neu-input::placeholder { color: rgba(139,138,173,0.5); }
+
+/* ── Status chip ─────────────────────────────────────── */
+.status-chip {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* ── Scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #7c3aed, #0ea5e9);
+  border-radius: 4px;
+}
+
+/* ── Animations ──────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-6px); }
+}
+
+.animate-fade-up  { animation: fadeUp 0.45s ease forwards; }
+.animate-fade-in  { animation: fadeIn 0.3s ease forwards; }
+.animate-float    { animation: float 4s ease-in-out infinite; }
+
+.delay-1 { animation-delay: 60ms; }
+.delay-2 { animation-delay: 120ms; }
+.delay-3 { animation-delay: 180ms; }
+.delay-4 { animation-delay: 240ms; }
+.delay-5 { animation-delay: 300ms; }
+
+/* ── Icon badge ──────────────────────────────────────── */
 .icon-badge {
-  width: 44px;
-  height: 44px;
+  width: 44px; height: 44px;
   border-radius: 12px;
   display: flex;
   align-items: center;
@@ -33,30 +256,5 @@ body {
   flex-shrink: 0;
 }
 
-input:focus, select:focus { outline: none; }
-
-.status-chip {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  padding: 3px 10px;
-  border-radius: 20px;
-}
-
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(14px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-.animate-fade-up { animation: fadeUp 0.45s ease forwards; }
-.animate-fade-in { animation: fadeIn 0.3s ease forwards; }
-
-.delay-1 { animation-delay: 60ms; }
-.delay-2 { animation-delay: 120ms; }
-.delay-3 { animation-delay: 180ms; }
-.delay-4 { animation-delay: 240ms; }
-.delay-5 { animation-delay: 300ms; }
+/* ── Mono font for data ──────────────────────────────── */
+.mono { font-family: 'JetBrains Mono', monospace; }

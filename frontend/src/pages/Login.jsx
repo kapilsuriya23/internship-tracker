@@ -14,95 +14,87 @@ export default function Login() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    setLoading(true);
-    setError('');
+    setLoading(true); setError('');
     try {
       const { data } = await api.post('/auth/login', form);
       login(data.token, data.user);
       navigate('/dashboard');
     } catch (err) {
-      setError(err.response?.data?.error || 'Login failed');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const inputStyle = {
-    width: '100%', background: '#111827',
-    border: '1px solid rgba(255,255,255,0.07)',
-    borderRadius: 12, padding: '13px 16px',
-    color: '#e2e8f0', fontSize: 14,
-    fontFamily: 'Plus Jakarta Sans, sans-serif',
-    transition: 'border-color 0.2s',
+      setError(err.response?.data?.error || err.message || 'Login failed');
+    } finally { setLoading(false); }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ background: '#0d1117' }}>
-      <div className="w-full max-w-md animate-fade-up">
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center',
+      justifyContent: 'center', padding: 16, position: 'relative' }}>
+
+      <div style={{
+        position: 'fixed', top: '20%', left: '15%', width: 280, height: 280,
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(124,58,237,0.15), transparent 70%)',
+        filter: 'blur(50px)', pointerEvents: 'none',
+      }} className="animate-float" />
+
+      <div className="w-full animate-fade-up" style={{ maxWidth: 420, position: 'relative', zIndex: 1 }}>
         {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2.5 mb-6">
-            <div className="icon-badge" style={{ background: '#4b7cf3', width: 40, height: 40, borderRadius: 12 }}>
+        <div style={{ textAlign: 'center', marginBottom: 36 }}>
+          <Link to="/" style={{ display: 'inline-flex', alignItems: 'center', gap: 10, textDecoration: 'none', marginBottom: 20 }}>
+            <div style={{
+              width: 40, height: 40, borderRadius: 11,
+              background: 'linear-gradient(135deg, #7c3aed, #0ea5e9)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              boxShadow: '0 6px 20px rgba(124,58,237,0.45)',
+            }}>
               <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M13 2L4.09 12.96a.5.5 0 0 0 .41.54H11l-2 9 8.91-10.96a.5.5 0 0 0-.41-.54H11l2-9z"/>
               </svg>
             </div>
-            <span className="font-bold text-xl text-white">InternTrack</span>
+            <span className="font-bold text-xl iris-text">InternTrack</span>
           </Link>
-          <h1 className="text-2xl font-extrabold text-white mb-1">Welcome back</h1>
-          <p className="text-sm" style={{ color: '#6b7a99' }}>Sign in to your account</p>
+          <h1 className="font-black" style={{ fontSize: 28, color: '#e2e0ff', letterSpacing: '-0.02em' }}>
+            Welcome back
+          </h1>
+          <p style={{ color: '#8b8aad', fontSize: 14, marginTop: 6 }}>Sign in to your account</p>
         </div>
 
-        <div style={{ background: '#1a2236', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 20, padding: 32 }}>
+        <div className="neu iris-border" style={{ padding: 32, borderRadius: 22 }}>
           {error && (
-            <div className="mb-5 px-4 py-3 rounded-xl text-sm font-medium"
-              style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', color: '#fca5a5' }}>
-              {error}
-            </div>
+            <div style={{
+              marginBottom: 20, padding: '12px 16px', borderRadius: 12,
+              background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)',
+              color: '#fca5a5', fontSize: 14, fontWeight: 500,
+            }}>{error}</div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
             <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#6b7a99', marginBottom: 6, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                Email
-              </label>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700,
+                textTransform: 'uppercase', letterSpacing: '0.08em',
+                color: '#8b8aad', marginBottom: 8 }}>Email</label>
               <input name="email" type="email" value={form.email} onChange={handle}
-                placeholder="you@example.com" required autoComplete="email" style={inputStyle}
-                onFocus={e => e.target.style.borderColor = 'rgba(75,124,243,0.5)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.07)'} />
+                placeholder="you@example.com" required className="neu-input" />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: 12, fontWeight: 700, color: '#6b7a99', marginBottom: 6, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                Password
-              </label>
+              <label style={{ display: 'block', fontSize: 11, fontWeight: 700,
+                textTransform: 'uppercase', letterSpacing: '0.08em',
+                color: '#8b8aad', marginBottom: 8 }}>Password</label>
               <input name="password" type="password" value={form.password} onChange={handle}
-                placeholder="••••••••" required autoComplete="current-password" style={inputStyle}
-                onFocus={e => e.target.style.borderColor = 'rgba(75,124,243,0.5)'}
-                onBlur={e => e.target.style.borderColor = 'rgba(255,255,255,0.07)'} />
+                placeholder="••••••••" required className="neu-input" />
             </div>
-
-            <button type="submit" disabled={loading} style={{
-              width: '100%', marginTop: 4,
-              background: 'linear-gradient(135deg, #4b7cf3, #3a6be0)',
-              color: 'white', fontFamily: 'Plus Jakarta Sans, sans-serif',
-              fontWeight: 700, fontSize: 14, padding: '14px',
-              borderRadius: 12, border: 'none', cursor: loading ? 'not-allowed' : 'pointer',
-              opacity: loading ? 0.6 : 1,
-              boxShadow: '0 4px 20px rgba(75,124,243,0.35)', transition: 'opacity 0.2s'
-            }}>
+            <button type="submit" disabled={loading} className="iris-btn"
+              style={{ padding: '14px', borderRadius: 12, fontSize: 15, opacity: loading ? 0.6 : 1 }}>
               {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
 
-          <p className="text-center mt-6 text-sm" style={{ color: '#6b7a99' }}>
+          <p style={{ textAlign: 'center', marginTop: 20, fontSize: 14, color: '#8b8aad' }}>
             No account?{' '}
-            <Link to="/register" className="font-semibold" style={{ color: '#4b7cf3' }}>Create one →</Link>
+            <Link to="/register" style={{ color: '#a78bfa', fontWeight: 700, textDecoration: 'none' }}>
+              Create one →
+            </Link>
           </p>
         </div>
       </div>
-
-      <div className="fixed top-1/3 right-1/4 w-64 h-64 pointer-events-none"
-        style={{ background: 'radial-gradient(circle, rgba(75,124,243,0.06) 0%, transparent 70%)' }} />
     </div>
   );
 }

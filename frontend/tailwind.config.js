@@ -4,53 +4,26 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Plus Jakarta Sans', 'sans-serif'],
+        sans:    ['Outfit', 'sans-serif'],
+        display: ['Outfit', 'sans-serif'],
+        mono:    ['JetBrains Mono', 'monospace'],
       },
       colors: {
-        navy: {
-          950: '#0d1117',
-          900: '#111827',
-          800: '#161d2e',
-          700: '#1c2541',
-          600: '#223060',
-          card: '#1a2236',
-          sidebar: '#131929',
+        bg:      '#1a1a2e',
+        deep:    '#12121f',
+        raised:  '#22223a',
+        iris: {
+          violet: '#a78bfa',
+          indigo: '#818cf8',
+          sky:    '#38bdf8',
+          pink:   '#f472b6',
+          emerald:'#34d399',
         },
-        blue: {
-          accent: '#4b7cf3',
-          soft: '#3a6be0',
-          glow: 'rgba(75, 124, 243, 0.18)',
-        },
-        orange: {
-          accent: '#f97316',
-          soft: '#ea6c0a',
-          glow: 'rgba(249, 115, 22, 0.18)',
-        },
-        slate: {
-          text: '#a3b0cc',
-          muted: '#6b7a99',
-          border: 'rgba(255,255,255,0.07)',
+        text: {
+          DEFAULT: '#e2e0ff',
+          muted:   '#8b8aad',
         }
       },
-      boxShadow: {
-        card: '0 4px 24px rgba(0,0,0,0.3)',
-        blue: '0 4px 20px rgba(75, 124, 243, 0.3)',
-        orange: '0 4px 20px rgba(249, 115, 22, 0.3)',
-      },
-      animation: {
-        'fade-up': 'fadeUp 0.45s ease forwards',
-        'fade-in': 'fadeIn 0.3s ease forwards',
-      },
-      keyframes: {
-        fadeUp: {
-          '0%': { opacity: '0', transform: 'translateY(14px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
-        fadeIn: {
-          '0%': { opacity: '0' },
-          '100%': { opacity: '1' },
-        },
-      }
     },
   },
   plugins: [],
