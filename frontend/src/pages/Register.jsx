@@ -48,12 +48,12 @@ export default function Register() {
                 <path d="M13 2L4.09 12.96a.5.5 0 0 0 .41.54H11l-2 9 8.91-10.96a.5.5 0 0 0-.41-.54H11l2-9z"/>
               </svg>
             </div>
-            <span className="font-bold text-xl iris-text">InternTrack</span>
+            <span className="font-bold text-xl iris-text">Job Application Tracker</span>
           </Link>
           <h1 className="font-black" style={{ fontSize: 28, color: '#e2e0ff', letterSpacing: '-0.02em' }}>
             Create account
           </h1>
-          <p style={{ color: '#8b8aad', fontSize: 14, marginTop: 6 }}>Start tracking your internships</p>
+          <p style={{ color: '#8b8aad', fontSize: 14, marginTop: 6 }}>Start tracking your job applications</p>
         </div>
 
         <div className="neu iris-border" style={{ padding: 32, borderRadius: 22 }}>

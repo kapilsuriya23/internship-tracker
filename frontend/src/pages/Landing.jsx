@@ -54,7 +54,7 @@ export default function Landing() {
                 <path d="M13 2L4.09 12.96a.5.5 0 0 0 .41.54H11l-2 9 8.91-10.96a.5.5 0 0 0-.41-.54H11l2-9z"/>
               </svg>
             </div>
-            <span className="font-bold text-lg iris-text">InternTrack</span>
+            <span className="font-bold text-lg iris-text">Job Application Tracker</span>
           </div>
           <div className="flex items-center gap-3">
             <Link to="/login" className="neu-btn text-sm px-4 py-2" style={{ color: '#8b8aad' }}>Login</Link>
@@ -81,7 +81,7 @@ export default function Landing() {
           }} />
           <span style={{ fontSize: 12, fontWeight: 700, color: '#a78bfa',
             letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-            Internship Command Center
+            Job Application Command Center
           </span>
         </div>
 
@@ -90,7 +90,7 @@ export default function Landing() {
             letterSpacing: '-0.03em', opacity: 0, marginBottom: 24 }}>
           <span style={{ color: '#e2e0ff' }}>Never lose track of</span>
           <br />
-          <span className="iris-text">an internship again.</span>
+          <span className="iris-text">a job application again.</span>
         </h1>
 
         <p className="animate-fade-up delay-2"
