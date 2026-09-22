@@ -78,14 +78,15 @@ app.use('/api/auth', authLimiter);
 // ── Routes ────────────────────────────────────────────────────
 app.use('/api/auth', authRoutes);
 app.use('/api/applications', applicationRoutes);
+app.use('/api/ai', require('./routes/ai'));
 
 // ── Health check (used by keep-alive ping) ────────────────────
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'OK',
     db: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected',
+    gemini: process.env.GEMINI_API_KEY ? '✅ set' : '❌ NOT SET',
     env: process.env.NODE_ENV,
-    uptime: Math.floor(process.uptime()) + 's'
   });
 });
 

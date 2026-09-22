@@ -36,7 +36,7 @@ export default function Navbar() {
 
   const navLinks = [
     { to: '/dashboard', label: 'Dashboard' },
-    { to: '/analytics', label: 'Analytics'  },
+    { to: '/analytics', label: 'ATS Analyzer' },
   ];
 
   return (
